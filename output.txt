@@ -1,0 +1,9 @@
+
+ Before Increasing:
+ x=2.4
+ After Increasing:
+ x=3.4
+ After Decrementation:
+ x=2.4
+ In destructor
+ invalid number
