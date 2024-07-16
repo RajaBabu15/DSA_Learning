@@ -2,32 +2,24 @@
 
 using namespace std;
 
-#define int long long
 
-int dpfunc(int sum, int ind, const int n_coins, const vector<int> &coins, vector<int> &dp) {
-	if (sum < 0 || ind >= n_coins) return -1;
-	if (dp[sum] != -1) return dp[sum];
-	int ans = 0;
-	for (int i = ind; i < n_coins; i++) {
-		int coin = coins[i];
-		if (sum > coin) {
-			int tmp = dpfunc(sum - coin, i, n_coins, coins, dp);
-			if (tmp != -1)
-				ans = (ans + tmp) % (1000000007);
-		}
-		else if (sum == coin && ind != i) ans = (ans + 1) % (1000000007);
-	}
-	dp[sum] = ans;
-	return ans;
-}
 
 void solve() {
-	int n_coins, sum; cin >> n_coins >> sum;
-	vector<int> coins(n_coins); for (auto &coin : coins) cin >> coin;
-	sort(coins.begin(), coins.end());
-	vector<int> dp(sum + 1, -1);
-	dpfunc(sum, 0, n_coins, coins, dp);
-	cout << dp[sum] << endl;
+	int MOD = 1000000007;
+	int n, x; cin >> n >> x;
+	vector<int> coins(n); for (auto &coin : coins) cin >> coin;
+	// state : dp[i][k]= no of ways to get the sum k using (i to n-1) pickable coins
+	// base case: dp[i][0]=1 ,  no of ways to get the sum = 0 is 1
+	// transition : dp[i][k]=dp[i][k-c_i]+dp[i+1][k];
+	vector<vector<int>> dp(n + 1, vector<int>(x + 1));
+	for (int i = 0; i < n; i++) {dp[i][0] = 1;}
+	for (int i = n - 1; i >= 0; i--) {
+		for (int j = 1; j <= x; j++) {
+			int tmp = (j - coins[i] >= 0) ? dp[i][j - coins[i]] : 0;
+			dp[i][j] = (tmp + dp[i + 1][j]) % MOD;
+		}
+	}
+	cout << dp[0][x] << endl;
 }
 
 signed main() {
